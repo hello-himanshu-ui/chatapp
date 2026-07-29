@@ -16,12 +16,23 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["sent", "delivered", "seen"],
+      default: "sent",
+    },
+
     deletedFor: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
+
+    edited: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

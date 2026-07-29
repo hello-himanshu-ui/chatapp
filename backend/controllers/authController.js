@@ -5,14 +5,37 @@ const jwt = require("jsonwebtoken");
 // Signup
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, username, email, password } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
+    // Validation
+    if (!name || !username || !email || !password) {
       return res.status(400).json({
-        message: "User already exists",
+        message: "All fields are required",
+      });
+    }
+
+    const cleanUsername = username.trim().toLowerCase();
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check email
+    const existingEmail = await User.findOne({
+      email: cleanEmail,
+    });
+
+    if (existingEmail) {
+      return res.status(400).json({
+        message: "Email already registered",
+      });
+    }
+
+    // Check username
+    const existingUsername = await User.findOne({
+      username: cleanUsername,
+    });
+
+    if (existingUsername) {
+      return res.status(400).json({
+        message: "Username already taken",
       });
     }
 
@@ -22,7 +45,8 @@ const signup = async (req, res) => {
     // Create user
     const user = await User.create({
       name,
-      email,
+      username: cleanUsername,
+      email: cleanEmail,
       password: hashedPassword,
     });
 
@@ -47,13 +71,21 @@ const signup = async (req, res) => {
   }
 };
 
-// Login (abhi baad me likhenge)
+// Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: cleanEmail });
 
     if (!user) {
       return res.status(400).json({
@@ -91,6 +123,7 @@ const login = async (req, res) => {
   }
 };
 
+// Get Logged-in User
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -108,6 +141,7 @@ const getMe = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   signup,
   login,

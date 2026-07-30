@@ -5,15 +5,15 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-const connectDB = require("./config/db");
+const connectDB = require("../config/db");
 
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
-const messageRoutes = require("./routes/messageRoutes");
-const aiRoutes = require("./routes/aiRoutes");
+const authRoutes = require("../routes/authRoutes");
+const userRoutes = require("../routes/userRoutes");
+const messageRoutes = require("../routes/messageRoutes");
+const aiRoutes = require("../routes/aiRoutes");
 
-const { onlineUsers, activeChats } = require("./socket/store");
-const { setIO } = require("./socket/ioInstance");
+const { onlineUsers, activeChats } = require("../socket/store");
+const { setIO } = require("../socket/ioInstance");
 
 // Connect Database
 connectDB();
